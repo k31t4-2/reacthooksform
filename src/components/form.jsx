@@ -1,26 +1,63 @@
 import React from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 export const Form = () => {
 
+  // １、useFormを使ってregisterとhandleSubmitを取り出す
+  // 1-1,バリデーションメッセージを使いたい場合、分割代入で設定しておく
+  // 1-2,defaultValuesで初期値を渡すことができる
+  const { register, handleSubmit, formState: { errors } } = useForm(
+    {defaultValues: {name:"関本圭汰", age:29}} // placeholderみたいなもの？
+  );
+
+  // ２、onSubmit関数は、submitイベントが発生かつバリデーションが成功した時に実行される
+  const onSubmit = (data) => console.log("onSubmit", data);
+
+
   return (
     <>
-      <label>名前</label>
-      <input type="text" />
+      <form onSubmit={handleSubmit(onSubmit)}>
 
-      <br />
-      <br/>
+        <label>
+          名前
+          <input type="text"  {...register("name", {
+            required: { value: true, message: "名前を入力してください" },
+          })}/>
+        </label>
+          <br/>
+        {errors.name && errors.name.message}
 
-      <label>性別</label>
-      <select>
-        <option>男性</option>
-        <option>女性</option>
-      </select>
+        <br />
+        <br />
 
-      <br />
-      <br/>
+        <label>
+          年齢
+          <input {...register("age", {
+            required: { value: true ,message:"入力してください"},
+          }
+          )} />歳
+        </label>
+        <br/>
+          {errors.age && errors.age.message}
 
-      <input type="submit" value="送信する"/>
+
+        <br />
+        <br/>
+
+        <label>
+          性別
+          <select>
+            <option>男性</option>
+            <option>女性</option>
+          </select>
+        </label>
+
+        <br />
+        <br/>
+
+        <input type="submit" />
+
+      </form>
     </>
   )
 }
